@@ -1,6 +1,6 @@
 const elementList = document.querySelector('#poke_list')
 
-const renderCard = () => {
+const renderCard = (element) => {
 
     // Estos son los elementos que vamos a crear de forma dinámica 
     const li = document.createElement('li')
@@ -15,15 +15,72 @@ const renderCard = () => {
     const divStats = document.createElement('div')
 
     // Aquí le agregamos los estilos con clases o atributos a nuestros elementos creados
-    divCard.classList.add('card')
+    divCard.classList.add('card','text')
     divImageName.classList.add('img_name_poke')
     divImage.classList.add('img_poke')
-    img.setAttribute('src','/assets/img/interrogación.png')
     divName.classList.add('name_poke')
     divInfo.classList.add('info_poke')
     divNumDex.classList.add('num_dex')
     divType.classList.add('type')
     divStats.classList.add('stats')
+
+
+
+    //Agregamos los datos que obtenemos de la api 
+    img.setAttribute('src',element.image)
+    divName.innerHTML =  element.name
+    divNumDex.innerHTML = 'Pokedex #'+ element.num_dex
+    if(element.types[0] && element.types[1]){
+        divType.innerHTML = element.types[0].type.name + ' / ' + element.types[1].type.name
+    }else{divType.innerHTML = element.types[0].type.name}
+    divStats.innerHTML = (element.stats.hp.name + ' ' +element.stats.hp.value
+    + ' / ' +element.stats.speed.name + ' ' +element.stats.speed.value
+    + ' / ' +element.stats.attack.name + ' ' +element.stats.attack.value 
+    + ' / ' +element.stats.defense.name + ' ' +element.stats.defense.value
+    + ' / ' +element.stats.s_attack.name + ' ' +element.stats.s_attack.value
+    + ' / ' +element.stats.s_defense.name + ' ' +element.stats.s_defense.value)
+
+    //Agregamos color al fondo de la tarjeta
+    if(element.types[0].type.name === 'grass'){
+        divCard.style.background = '#3ECD34'
+    }else if(element.types[0].type.name === 'water'){
+        divCard.style.background = '#4088FF'
+    }else if(element.types[0].type.name === 'fire'){
+        divCard.style.background = '#FF2121'
+    }else if(element.types[0].type.name === 'ice'){
+        divCard.style.background = '#12EAE0'
+    }else if(element.types[0].type.name === 'electric'){
+        divCard.style.background = '#F7F326'
+    }else if(element.types[0].type.name === 'bug'){
+        divCard.style.background = '#AEFF59'
+    }else if(element.types[0].type.name === 'fairy'){
+        divCard.style.background = '#FA99FF'
+    }else if(element.types[0].type.name === 'steel'){
+        divCard.style.background = '#C6C6C6'
+    }else if(element.types[0].type.name === 'normal'){
+        divCard.style.background = '#C07663'
+    }else if(element.types[0].type.name === 'dragon'){
+        divCard.style.background = '#1700FF'
+        divCard.style.color = '#ebf527'
+    }else if(element.types[0].type.name === 'fighting'){
+        divCard.style.background = '#D34E30'
+    }else if(element.types[0].type.name === 'poison'){
+        divCard.style.background = '#9B00FF'
+    }else if(element.types[0].type.name === 'ground'){
+        divCard.style.background = '#B47443'
+    }else if(element.types[0].type.name === 'flying'){
+        divCard.style.background = '#7FACC9'
+    }else if(element.types[0].type.name === 'psychic'){
+        divCard.style.background = '#FF00F0'
+    }else if(element.types[0].type.name === 'ghost'){
+        divCard.style.background = '#455F8F'
+    }else if(element.types[0].type.name === 'rock'){
+        divCard.style.background = '#8C6C47'
+    }else{
+        divCard.style.background = '#202020'
+        divCard.style.color = '#d1da24'
+    }
+
 
     //Aquí vamos a definir quién es hijo de quién para la estructura de la card
     elementList.appendChild(li)
@@ -45,17 +102,20 @@ const normalizeData = (pokemon) => {
         name: pokemon.name,
         num_dex: pokemon.id,
         types: pokemon.types,
-        stats: pokemon.stats
-        // {
-        //     hp:{name: pokemon.stats[0].stat.name, value: pokemon.stats[0].base_stat},
-        //     attack:{name: pokemon.stats[1].stat.name, value: pokemon.stats[1].base_stat},
-        //     defense:{name: pokemon.stats[2].stat.name, value: pokemon.stats[2].base_stat},
-        //     s_attack:{name: pokemon.stats[3].stat.name, value: pokemon.stats[3].base_stat},
-        //     s_defense:{name: pokemon.stats[4].stat.name, value: pokemon.stats[4].base_stat},
-        //     speed:{name: pokemon.stats[5].stat.name, value: pokemon.stats[5].base_stat}
-        // }
+        stats:
+        {
+            hp:{name: pokemon.stats[0].stat.name, value: pokemon.stats[0].base_stat},
+            attack:{name: pokemon.stats[1].stat.name, value: pokemon.stats[1].base_stat},
+            defense:{name: pokemon.stats[2].stat.name, value: pokemon.stats[2].base_stat},
+            s_attack:{name: pokemon.stats[3].stat.name, value: pokemon.stats[3].base_stat},
+            s_defense:{name: pokemon.stats[4].stat.name, value: pokemon.stats[4].base_stat},
+            speed:{name: pokemon.stats[5].stat.name, value: pokemon.stats[5].base_stat}
+        }
     }
-    console.log(pokedata)
+    let datospoke = []
+    datospoke.push(pokedata)
+    // console.log(datospoke)
+    return datospoke
 }
 
 
@@ -63,11 +123,12 @@ const main = () => {
     fetch('https://pokeapi.co/api/v2/pokemon?limit=386')
         .then(response => response.json())
         .then((pokemones)=>{
-            console.log(pokemones)
+            // console.log(pokemones)
             pokemones.results.forEach(element => {
                 fetch(`${element.url}`)
                 .then((response)=>response.json())
                 .then((pokemon)=> normalizeData(pokemon))
+                .then(datospoke => datospoke.forEach(renderCard))
             });
         })
 }
