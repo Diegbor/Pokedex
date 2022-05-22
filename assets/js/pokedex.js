@@ -2,18 +2,28 @@ const elementList = document.querySelector('#poke_list')
 const searchElement = document.querySelector('#search_poke')
 let datospoke = []
 
-// searchElement.addEventListener('keyup',(event)=>{
-//     const inputText = event?.target?.value.toLocaleLowerCase() || ''
-//     searchingWithFor(inputText)
-    // searchingWithFilter(inputText)
-// })
+searchElement.addEventListener('keyup',(event)=>{
+    const inputText = event?.target?.value.toLocaleLowerCase() || ''
+    clean()
+    // searchingWithFor(inputText)
+    const pokemonFiltered = searchingWithFilter(inputText)
+    pokemonFiltered.forEach(renderCard)
+})
 
-// const searchingWithFilter = (searchingText)=>{
-
-// }
+const clean = () => {
+    elementList.innerHTML = ''
+}
+const searchingWithFilter = (searchingText)=>{
+    // console.log(searchingText,datospoke)
+    const pokemonFiltered = datospoke.filter(pokemon => {
+        const name = pokemon.name;
+        return (name.toLocaleLowerCase()).includes(searchingText)
+    });
+    return pokemonFiltered;
+}
 
 const renderCard = (element) => {
-    console.log('aqui',element)
+    // console.log('aqui',element)
     // Estos son los elementos que vamos a crear de forma dinámica 
     const li = document.createElement('li')
     const divCard = document.createElement('div')
@@ -125,21 +135,34 @@ const normalizeData = (pokemon) => {
         }
     }
     
-    // datospoke.push(pokedata)
+    datospoke.push(pokedata)
     // console.log(datospoke)
     return pokedata
 }
 
 
 const main = () => {
+    //Llamamos a la api
     fetch('https://pokeapi.co/api/v2/pokemon?limit=386')
+    //Guardamos la respuesta de la api como un json
         .then(response => response.json())
+        // Al json lo guardamos en una variable llamada pokemones 
+        // y la usamos como entrada del then
         .then((pokemones)=>{
             // console.log(pokemones)
+            // Recorremos el arreglo de pokemones
             pokemones.results.forEach(element => {
+                // Aqui llamamos a cada pokemon individualmente
                 fetch(`${element.url}`)
+                // Aquí convertimos la indormacion de cada pokemon en un json individual
                 .then((response)=>response.json())
+                // Cada json de cada pokemon lo guardamos en una variable llamada pokemon
+                // y se la pasamos a la funcion normalizeData para sintetizar la 
+                // información requerida
                 .then((pokemon)=> normalizeData(pokemon))
+                // la funcion normalizeData nos regresa el objeto pokedata que es la información de 
+                // cada pokemon individual y se lo pasa a la función renderCard para
+                // pintar cada tarjeta con la informacion de cada pokemon
                 .then((pokedata)=>renderCard(pokedata))
             });
         })
