@@ -1,7 +1,19 @@
 const elementList = document.querySelector('#poke_list')
+const searchElement = document.querySelector('#search_poke')
+let datospoke = []
+
+// searchElement.addEventListener('keyup',(event)=>{
+//     const inputText = event?.target?.value.toLocaleLowerCase() || ''
+//     searchingWithFor(inputText)
+    // searchingWithFilter(inputText)
+// })
+
+// const searchingWithFilter = (searchingText)=>{
+
+// }
 
 const renderCard = (element) => {
-
+    console.log('aqui',element)
     // Estos son los elementos que vamos a crear de forma dinámica 
     const li = document.createElement('li')
     const divCard = document.createElement('div')
@@ -33,12 +45,12 @@ const renderCard = (element) => {
     if(element.types[0] && element.types[1]){
         divType.innerHTML = element.types[0].type.name + ' / ' + element.types[1].type.name
     }else{divType.innerHTML = element.types[0].type.name}
-    divStats.innerHTML = (element.stats.hp.name + ' ' +element.stats.hp.value
-    + ' / ' +element.stats.speed.name + ' ' +element.stats.speed.value
-    + ' / ' +element.stats.attack.name + ' ' +element.stats.attack.value 
-    + ' / ' +element.stats.defense.name + ' ' +element.stats.defense.value
-    + ' / ' +element.stats.s_attack.name + ' ' +element.stats.s_attack.value
-    + ' / ' +element.stats.s_defense.name + ' ' +element.stats.s_defense.value)
+    divStats.innerHTML = (element.stats.hp.name + ': ' +element.stats.hp.value
+    + ' / ' +element.stats.speed.name + ': ' +element.stats.speed.value
+    + ' / ' +element.stats.attack.name + ': ' +element.stats.attack.value 
+    + ' / ' +element.stats.defense.name + ': ' +element.stats.defense.value
+    + ' / ' +element.stats.s_attack.name + ': ' +element.stats.s_attack.value
+    + ' / ' +element.stats.s_defense.name + ': ' +element.stats.s_defense.value)
 
     //Agregamos color al fondo de la tarjeta
     if(element.types[0].type.name === 'grass'){
@@ -112,10 +124,10 @@ const normalizeData = (pokemon) => {
             speed:{name: pokemon.stats[5].stat.name, value: pokemon.stats[5].base_stat}
         }
     }
-    let datospoke = []
-    datospoke.push(pokedata)
+    
+    // datospoke.push(pokedata)
     // console.log(datospoke)
-    return datospoke
+    return pokedata
 }
 
 
@@ -128,10 +140,11 @@ const main = () => {
                 fetch(`${element.url}`)
                 .then((response)=>response.json())
                 .then((pokemon)=> normalizeData(pokemon))
-                .then(datospoke => datospoke.forEach(renderCard))
+                .then((pokedata)=>renderCard(pokedata))
             });
         })
+        // .then(function(){ datospoke.forEach(renderCard)})
 }
 
 main()  
-renderCard()
+// renderCard()
