@@ -121,7 +121,7 @@ const renderCard = (element) => {
 
 const normalizeData = (pokemon) => {
     const pokedata = {
-        image: pokemon.sprites.other.dream_world.front_default,
+        image: pokemon.sprites.other.home.front_default,
         name: pokemon.name,
         num_dex: pokemon.id,
         types: pokemon.types,
@@ -144,7 +144,7 @@ const normalizeData = (pokemon) => {
 
 const main = () => {
     //Llamamos a la api
-    fetch('https://pokeapi.co/api/v2/pokemon?limit=386')
+    fetch('https://pokeapi.co/api/v2/pokemon?limit=721')
     //Guardamos la respuesta de la api como un json
         .then(response => response.json())
         // Al json lo guardamos en una variable llamada pokemones 
