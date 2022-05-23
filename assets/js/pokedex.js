@@ -1,5 +1,6 @@
 const elementList = document.querySelector('#poke_list')
 const searchElement = document.querySelector('#search_poke')
+const select = document.querySelector('#Tipos')
 let datospoke = []
 
 searchElement.addEventListener('keyup',(event)=>{
@@ -168,6 +169,19 @@ const main = () => {
         })
         // .then(function(){ datospoke.forEach(renderCard)})
 }
+
+select.addEventListener('change',(event) => {
+    const types18 = event?.target?.value || ''
+    const newData = datospoke.filter( (element) => {
+        const type1 = element.types[0].type.name
+        // const type2 = element.types[1].type.name
+        console.log(element.types)
+        return type1.includes(types18) 
+        // || type2.includes(types18)
+    })
+    clean()
+    newData.forEach(renderCard)
+})
 
 main()  
 // renderCard()
